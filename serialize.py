@@ -2,7 +2,6 @@ import os
 import re
 import json
 import argparse
-import numpy as np
 
 
 class Serialize:
