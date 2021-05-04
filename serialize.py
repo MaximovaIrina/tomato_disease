@@ -2,6 +2,7 @@ import os
 import re
 import json
 import argparse
+import numpy as np
 
 
 class Serialize:
@@ -30,20 +31,21 @@ class Serialize:
         return {'root': data[0],
                 'group_names': data[1],
                 'image_names': data[2],
-                'group_id': data[3] }
+                'group_id': data[3]}
 
     def _split_data(self, split):
         root, group_names, image_names, group_id = self.data
         group_sizes = {k: group_id.count(k) for k in set(group_id)}
         n = int(split * min(group_sizes.values()))
 
+        indices = list(range(len(image_names)))
+
         left = 0
         train_ind = []
-        indices = list(range(len(image_names)))
         for gs in group_sizes.values():
             train_ind += indices[left: left + n]
             left += gs
-        test_ind = [i for i in indices if not i in train_ind]
+        test_ind = [i for i in indices if i not in train_ind]
 
         train_image_names = [image_names[i] for i in train_ind]
         train_group_id = [group_id[i] for i in train_ind]
@@ -84,4 +86,3 @@ if __name__ == "__main__":
     with open(f'{DST_ROOT}//test_ds.json', 'w') as f:
         json.dump(test_data, f)
         print(f'Save {f.name}')
-
