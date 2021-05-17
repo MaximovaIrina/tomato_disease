@@ -76,3 +76,24 @@ def name_features():
             for th in ['0', 'Pi/4', 'Pi/2', '3Pi/4']:
                 glcm += [prop + '_' + str(d) + '_' + th]
     return np.concatenate([stat, hist, glcm])
+
+
+def cimbine_features(channel='R', dst_root='comb'):
+    fileg = os.path.join(os.getcwd(), f'..\\data\\global\\test\\{channel}.pth')
+    filel = os.path.join(os.getcwd(), f'..\\data\\local\\test\\{channel}.pth')
+    xg, y = features_labels(fileg, scale=False)
+    xl, _ = features_labels(filel, scale=False)
+    x = np.concatenate([xl[:, :8], xg[:, 8:]], axis=1)
+    file = os.path.join(os.getcwd(),  dst_root, 'test', f'{channel}.pth')
+    data = {'features': x, 'labels': y}
+    torch.save(data, file)
+
+    fileg = os.path.join(os.getcwd(), f'..\\data\\global\\train\\{channel}.pth')
+    filel = os.path.join(os.getcwd(), f'..\\data\\local\\train\\{channel}.pth')
+    xg, y = features_labels(fileg, scale=False)
+    xl, _ = features_labels(filel, scale=False)
+    x = np.concatenate([xl[:, :8], xg[:, 8:]], axis=1)
+    file = os.path.join(os.getcwd(), dst_root, 'train', f'{channel}.pth')
+    data = {'features': x, 'labels': y}
+    torch.save(data, file)
+
