@@ -1,5 +1,3 @@
-import time
-
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
@@ -8,16 +6,19 @@ from sklearn.svm import SVC
 from tqdm import tqdm
 import pandas as pd
 import torch
+import time
 
 from models.dtree import DTree
+from models.fisher import Fisher
 from models.slp import SLPClassifer
 from utils.utils import scale, features_labels, transform_features
 
 
 def build_classifiers():
     classifiers = dict()
-    classifiers['DT'] = DecisionTreeClassifier(criterion='entropy', max_depth=9)
     classifiers['MDT'] = DTree(lim_std=2)
+    classifiers['Fisher'] = Fisher()
+    classifiers['DT'] = DecisionTreeClassifier(criterion='entropy', max_depth=9)
     classifiers['KNN'] = KNeighborsClassifier(metric='euclidean', n_jobs=8, n_neighbors=3, weights='distance')
     classifiers['RF'] = RandomForestClassifier(n_jobs=8, criterion='entropy', max_depth=15, n_estimators=80)
     classifiers['SVM'] = SVC(C=10, gamma='auto')
@@ -44,7 +45,8 @@ def train_and_test(ind, clf, train_data, test_data):
 
     classifier_state = {'classifier': clf, 'mean': mean_train, 'std': std_train}
     torch.save(classifier_state, f'data\\state\\{clf.__class__.__name__}_{mode}_{channel}.pth')
-    torch.save({'prediction': prediction, 'y': y_test}, f'data\\test_predict\\{clf.__class__.__name__}_{mode}_{channel}.pth')
+    torch.save({'prediction': prediction, 'y': y_test},
+               f'data\\test_predict\\{clf.__class__.__name__}_{mode}_{channel}.pth')
 
     if len(set(y_train)) == 2:
         fsocre = f1_score(y_test, prediction, average='binary')
@@ -70,10 +72,10 @@ def classification_results(classifiers, train, test):
 
 
 if __name__ == '__main__':
-    modes = ['global', 'local', 'comb']
+    task = ['detection']
+    modes = ['global']
     channels = ['R', 'ndvi']
-    lenght = ['short', 'middle', 'long']
-    task = ['c', 'd']
+    lenght = ['short']
 
     for t in task:
         for mode in modes:
@@ -82,7 +84,7 @@ if __name__ == '__main__':
                     x, y = features_labels(f'data\\{mode}\\train\\{channel}.pth')
                     x_test, y_test = features_labels(f'data\\{mode}\\test\\{channel}.pth')
 
-                    if t == 'd':
+                    if t == 'detection':
                         y = [1 if label == 2 else 0 for label in y]
                         y_test = [1 if label == 2 else 0 for label in y_test]
 
@@ -92,8 +94,10 @@ if __name__ == '__main__':
                     classifiers = build_classifiers()
                     data = classification_results(classifiers, train=(x, y), test=(x_test, y_test))
 
+                    print(f"{mode}_{channel}_{lenn}", data)
+
                     df = pd.DataFrame(data=data)
-                    if t == 'c':
+                    if t == 'classification':
                         df.to_excel(f'data\\result\\{mode}_{channel}_{lenn}.xlsx')
                         print(f'Save data\\result\\{mode}_{channel}_{lenn}.xlsx')
                     else:
