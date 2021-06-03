@@ -4,6 +4,14 @@ import cv2
 import os
 
 
+def show_less_10(img_file):
+    img = cv2.imread(img_file)
+    img = img[:, :, 2]
+    res = np.zeros(img.shape)
+    res[(img < 10) & (img > 0)] = 200
+    cv2.imwrite('plot\\less_10.png', res)
+
+
 def features_labels(file, scale=False):
     dataset = torch.load(file)
     features = np.asarray(dataset['features'])
