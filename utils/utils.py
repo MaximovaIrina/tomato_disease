@@ -4,6 +4,7 @@ import cv2
 import os
 
 
+
 def show_less_10(img_file):
     img = cv2.imread(img_file)
     img = img[:, :, 2]
