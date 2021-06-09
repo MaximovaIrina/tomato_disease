@@ -1,4 +1,8 @@
-.idea/
 ds/
-jupyter/
+sample/
+ds_src/
 data/
+
+.idea/
+jupyter/
+__pycache__/
