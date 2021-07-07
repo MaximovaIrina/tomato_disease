@@ -3,6 +3,10 @@ import torch
 import cv2
 import os
 
+from skimage.feature import greycomatrix, greycoprops
+from tqdm import tqdm
+
+from models.features import Features
 
 
 def show_less_10(img_file):
@@ -106,3 +110,44 @@ def cimbine_features(channel='R', dst_root='comb'):
     data = {'features': x, 'labels': y}
     torch.save(data, file)
 
+
+def getLocFeachAsImage(img_pth):
+    PI = np.pi
+    MODE, CHANNEL = 'local', 'ndvi'
+    bins, dist = [-2, -1, 0, 1, 2], [1, 4, 8]
+    theta = [0, PI / 4, PI / 2, 3 * PI / 4]
+    ds_stat = common_healthy_stat('..\\ds\\Healthy', path=f'..\\data\\stat.pth')
+    model = Features(MODE, CHANNEL, ds_stat, bins, dist, theta)
+
+    image = cv2.imread(img_pth)
+    image = np.transpose(image, (2, 0, 1))
+    image = np.pad(image, [(0, 0), (0, 1), (0, 1)], mode='constant')
+    image = np.expand_dims(image, 0)
+    image = torch.tensor(image)
+    # delete AVP in model
+    features = model(image)
+    torch.save(features, '..\\data\\Healthy_sample.pth')
+
+
+def healthyImgFilter(root):
+    files = os.listdir(root)
+    i = 0
+    for file in tqdm(files):
+        img = cv2.imread(os.path.join(root, file))
+        red = img[:, :, 2]
+        bins = list(range(0, 256, 5))
+        q_img = np.digitize(red, bins=bins) - 1
+
+        g = greycomatrix(q_img, [1], [0], levels=len(bins) + 1, normed=True, symmetric=True)
+        g = g[1:, 1:, :, :]
+        hom = greycoprops(g, 'homogeneity')[0][0]
+        std = np.std(red)
+
+        if 0.35 < hom < 0.42 and 30 < std < 60:
+            save = os.path.join(os.getcwd(), 'sort', file)
+            cv2.imwrite(save, img)
+            i += 1
+
+        # Balance dataset
+        if i > 1000:
+            break
