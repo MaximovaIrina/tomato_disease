@@ -16,17 +16,34 @@
 * Цветовой профиль: RGB
 
 ## Предобработка данных
-**1. Удаление черного фона.** Наличие большой черной области сильно искажает сатистические и  тектурные признаки изображения. Обнаружено, что на края листьев и прелегающей области находится много околонулевых писелей - вероятно это эффект предварительной сегментации. Поэтому фоновыми считаются пиксели с интесивностью, меньше 10. Данный порог подобран эмпирически.    
-<p align="center">
-<img src="reports/readme_design/remove_10_pixel.png" alt="Фоновые пиксели" height="200"/>
-</p>  
+**1. Удаление черного фона.** Наличие большой черной области сильно искажает сатистические и  тектурные признаки изображения. Обнаружено, что на края листьев и прелегающей области находится много околонулевых писелей - вероятно это эффект предварительной сегментации. Поэтому фоновыми считаются пиксели с интесивностью, меньше 10. Данный порог подобран эмпирически. <p align="center"><img src="reports/readme_design/remove_10_pixel.png" alt="Фоновые пиксели" height="200"/></p>
 **2. Фильтрация выборки здоровых изображений.** Обнаружено, что выборка здоровых листьев состоит из двух 2 типов изображений – гладкие, равномерно освещенные листья и листья с фактурой и тенью. Для дальнейшего исследования решено оставить те изображения, что ближе к реальности – с фактурой и тенью. Отсеивая все изображения, чьи стандартные отклонения
-меньше 30,  будет обрезано распределение по данному признаку. Чтобы этого не допустить дбавлена проверка на однородность: HOM > 0.4. Все пороги отсеивания подобраны из вида распределения соответствующего признака.  
+меньше 30,  будет обрезано распределение по данному признаку. Чтобы этого не допустить добавлена проверка на однородность: HOM > 0.4. Все пороги отсеивания подобраны из вида распределений соответствующего признака.  
 <p align="center">
-<img src="reports/readme_design/two_types_healthy.png" alt="Фоновые пиксели" height="200"/>
-<img src="reports/readme_design/stats_healthy.png" alt="Фоновые пиксели" height="200"/>
-<img src="reports/readme_design/healthy_hom.png" alt="Фоновые пиксели" height="200"/>
+<img src="reports/readme_design/two_types_healthy.png" alt="Два типа изображений здоровых листьев" height="150"/>  
+</p>  
+<p align="center">
+<img src="reports/readme_design/stat_healthy.png" alt="Статистика интесивностей пикселей здоровой выборки" height="150"/>
+<img src="reports/readme_design/healthy_hom.png" alt="Распределение оценки однородности изображений для здоровой выборки" height="140"/>
 </p>
+
+## Извлечение признаков  
+Для обучения и тестирования классификаторов из изображений извлекались следующие группы признаков: 
+- **STAT**. Статистические характеристики интесивности пикселей изображения:  
+<p align="center">
+  <img src="https://latex.codecogs.com/gif.latex?\mu&space;=&space;\frac{1}{N}&space;\sum_{i}^{}L_i" title="\mu = \frac{1}{N} \sum_{i}^{}L_i" />
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="https://latex.codecogs.com/gif.latex?\sigma&space;=&space;\sqrt&space;{\frac{1}{N}\sum&space;(L_i&space;-&space;\mu)^2}" title="\sigma = \sqrt {\frac{1}{N}\sum (L_i - \mu)^2}" />
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="https://latex.codecogs.com/gif.latex?min_{normalized}&space;=&space;\frac{\mu&space;-&space;min\left\{{L_i}\right\}}{\sigma}" title="min_{normalized} = \frac{\mu -      min\left\{{L_i}\right\}}{\sigma}"/>
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="https://latex.codecogs.com/gif.latex?max_{normalized}&space;=&space;\frac{max\left\{{L_i}\right\}&space;-&space;\mu}{\sigma}" title="max_{normalized} =                  \frac{max\left\{{L_i}\right\} - \mu}{\sigma}" />
+</p>
+- **HIST**. Бины квантованной гостограммы изображений:   
+<p align="center">
+<img src="https://latex.codecogs.com/gif.latex?Q&space;=&space;\begin{cases}&space;[\mu&space;-&space;2\sigma,&space;\mu&space;-&space;\sigma),&space;&&space;\mbox{0th&space;bin&space;}&space;\\&space;[\mu&space;-&space;\sigma,&space;\mu)&space;&&space;\mbox{1st&space;bin&space;}&space;\\&space;[\mu,&space;\mu&space;&plus;&space;\sigma)&space;&&space;\mbox{2nd&space;bin&space;}&space;\\&space;[\mu&space;&plus;&space;\sigma,&space;\mu&space;&plus;&space;2\sigma)&space;&&space;\mbox{3rd&space;bin&space;}&space;\\&space;\end{cases}" title="Q = \begin{cases} [\mu - 2\sigma, \mu - \sigma), & \mbox{0th bin } \\ [\mu - \sigma, \mu) & \mbox{1st bin } \\ [\mu, \mu + \sigma) & \mbox{2nd bin } \\ [\mu + \sigma, \mu + 2\sigma) & \mbox{3rd bin } \\ \end{cases}" />
+</p>
+- **GLCM**. Текстурные признаки изображений на базе матрицы [GLCM]:  
 
 
 ## Описание модулей
@@ -65,6 +82,7 @@
 1. Провести анализ отдельно над каждым типом признаков. Построить гистограмммы для статистических признаков. Исследовать оптимальное число уровней квантования для hist и stat.
 1. Возможно оставить лишь одну задачу - классификации, когда переходим к локальным признакам. А в момент определения лучшего классификатора, уменьшать размерность пространства признаков только относительно него.
 
+[GLCM]: https://prism.ucalgary.ca/bitstream/handle/1880/51900/texture%20tutorial%20v%203_0%20180206.pdf?sequence=11&isAllowed=y
 [GLCM Texture: A Tutorial]: https://prism.ucalgary.ca/bitstream/handle/1880/51900/texture%20tutorial%20v%203_0%20180206.pdf?sequence=11&isAllowed=y
 [PyTorch]: https://pytorch.org/docs/stable/index.html
 [Scikit Learn algorithms]: https://scikit-learn.org/stable/modules/classes.html#module-sklearn.tree
