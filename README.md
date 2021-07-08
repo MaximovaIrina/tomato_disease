@@ -5,7 +5,7 @@
 В проекте используется [Plant Village Dataset], содержащий 6000 отсегментированных изображений больных и здоровых листьев томатов, сбалансированно
 разбитый на 6 категорий:
 <p align="center">
-<img src="reports/readme_design/group_names.jpg" alt="Круговая диаграмма распределения изображений по группам" height="150"/>
+<img src="reports/readme_design/group_names.jpg" alt="Круговая диаграмма распределения изображений по группам" height="250"/>
 <img src="reports/readme_design/example_images.png" alt="Примеры листьев томатов, пораженных исследуемыми заболеваниями" height="150"/>
 </p>
 
