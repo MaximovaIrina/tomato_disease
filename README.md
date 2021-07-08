@@ -5,7 +5,7 @@
 В проекте используется [Plant Village Dataset], содержащий 6000 отсегментированных изображений больных и здоровых листьев томатов, сбалансированно
 разбитый на 6 категорий:
 <p align="center">
-<img src="reports/readme_design/group_names.jpg" alt="Круговая диаграмма распределения изображений по группам" height="170"/>
+<img src="reports/readme_design/group_names.jpg" alt="Круговая диаграмма распределения изображений по группам" height="160"/>
 <img src="reports/readme_design/example_images.png" alt="Примеры листьев томатов, пораженных исследуемыми заболеваниями" height="150"/>
 </p>
 
@@ -45,7 +45,11 @@
 - **STAT**. Статистические характеристики интесивности пикселей изображения: <p align="center"><img src="https://latex.codecogs.com/gif.latex?\mu&space;=&space;\frac{1}{N}&space;\sum_{i}^{}L_i" title="\mu = \frac{1}{N} \sum_{i}^{}L_i" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://latex.codecogs.com/gif.latex?\sigma&space;=&space;\sqrt&space;{\frac{1}{N}\sum&space;(L_i&space;-&space;\mu)^2}" title="\sigma = \sqrt {\frac{1}{N}\sum (L_i - \mu)^2}" /><br><img src="https://latex.codecogs.com/gif.latex?min_{normalized}&space;=&space;\frac{\mu&space;-&space;min\left\{{L_i}\right\}}{\sigma}" title="min_{normalized} = \frac{\mu -   min\left\{{L_i}\right\}}{\sigma}"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://latex.codecogs.com/gif.latex?max_{normalized}&space;=&space;\frac{max\left\{{L_i}\right\}&space;-&space;\mu}{\sigma}" title="max_{normalized} = \frac{max\left\{{L_i}\right\} - \mu}{\sigma}" /></p>
 - **HIST**. Бины квантованной гостограммы изображений: <p align="center"><img src="https://latex.codecogs.com/gif.latex?Q&space;=&space;\begin{cases}&space;[\mu&space;-&space;2\sigma,&space;\mu&space;-&space;\sigma),&space;&&space;\mbox{0th&space;bin&space;}&space;\\&space;[\mu&space;-&space;\sigma,&space;\mu)&space;&&space;\mbox{1st&space;bin&space;}&space;\\&space;[\mu,&space;\mu&space;&plus;&space;\sigma)&space;&&space;\mbox{2nd&space;bin&space;}&space;\\&space;[\mu&space;&plus;&space;\sigma,&space;\mu&space;&plus;&space;2\sigma)&space;&&space;\mbox{3rd&space;bin&space;}&space;\\&space;\end{cases}" title="Q = \begin{cases} [\mu - 2\sigma, \mu - \sigma), & \mbox{0th bin } \\ [\mu - \sigma, \mu) & \mbox{1st bin } \\ [\mu, \mu + \sigma) & \mbox{2nd bin } \\ [\mu + \sigma, \mu + 2\sigma) & \mbox{3rd bin } \\ \end{cases}" /> &nbsp;&nbsp; <img src="reports/readme_design/hist_fe_groups.png" alt="Гистограммы интенсивностей пикселей для каждой группа болезней" height="100"/></p>
 - **GLCM**. Текстурные признаки изображений на базе матрицы [GLCM]: <p align="center"><img src="https://latex.codecogs.com/gif.latex?energy&space;=&space;\sum_{i,j}^{}(P_{ij})^2" title="energy = \sum_{i,j}^{}(P_{ij})^2" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://latex.codecogs.com/gif.latex?entropy&space;=&space;\sum_{i,j}^{}-ln(P_{ij})P_{ij}" title="entropy = \sum_{i,j}^{}-ln(P_{ij})P_{ij}" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://latex.codecogs.com/gif.latex?contrast&space;=&space;\sum_{i,j}^{}&space;P_{ij}(i-j)^2" title="contrast = \sum_{i,j}^{} P_{ij}(i-j)^2" /><br><img src="https://latex.codecogs.com/gif.latex?homogeneity&space;=&space;\sum_{i,j}^{}&space;\frac{P_{ij}}{1&plus;(i-j)^2}" title="homogeneity = \sum_{i,j}^{} \frac{P_{ij}}{1+(i-j)^2}" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<img src="https://latex.codecogs.com/gif.latex?correlation&space;=&space;\sum_{i,j}^{}&space;P_{ij}&space;\frac{(i-\mu)(j-\mu)}{\sigma^2}" title="correlation = \sum_{i,j}^{} P_{ij} \frac{(i-\mu)(j-\mu)}{\sigma^2}" /></p> Для вычисления GLCM необходимо задать два параметра: *d* - расстояние межде пикселями и *φ* - направление от первого пикселя ко второму. Для выбора оптимальных параметров *d* и *φ*, способных наилучшим образом отделять классы, использовалась информация о косинусном расстоянии между средними векторами глобальных текстурных признаков. Чем меньше угол, тем выше сходство. Для каждого класса вычислен средний вектор глобальных текстурных признаков и найдено среднее значение косинуса с векторами остальных классов при заданной паре параметров (d, φ). <p align="center"> <img src="reports/readme_design/cosine.png" alt="Косинус" height="200"/></p>В качестве лучшего расстояния можно выделить d=4. Признаки, рассчитанные при таком значении d, имеют наименьшее косинусное сходство, значит более разнообразно описывают классы. Относительно параметра φ сложно выделить лучшее значение
+<img src="https://latex.codecogs.com/gif.latex?correlation&space;=&space;\sum_{i,j}^{}&space;P_{ij}&space;\frac{(i-\mu)(j-\mu)}{\sigma^2}" title="correlation = \sum_{i,j}^{} P_{ij} \frac{(i-\mu)(j-\mu)}{\sigma^2}" /></p> Для вычисления GLCM необходимо задать два параметра: *d* - расстояние межде пикселями и *φ* - направление от первого пикселя ко второму. Для выбора оптимальных параметров *d* и *φ*, способных наилучшим образом отделять классы, использовалась информация о косинусном расстоянии между средними векторами глобальных текстурных признаков. Чем меньше угол, тем выше сходство. Для каждого класса вычислен средний вектор глобальных текстурных признаков и найдено среднее значение косинуса с векторами остальных классов при заданной паре параметров (d, φ). <p align="center"> <img src="reports/readme_design/cosine.png" alt="Косинус" height="200"/></p>В качестве лучшего расстояния можно выделить d=4. Признаки, рассчитанные при таком значении d, имеют наименьшее косинусное сходство, значит более разнообразно описывают классы. Относительно параметра φ сложно выделить лучшее значение. Поэтому предлагается рассматривать вектора признаков разной длинны:
+  - *short* - GLCM признаки для d={4} усредненное по φ={0, π/4, π/2, 3π/4} (всего 5 признаков)
+  - *middle* - GLCM признаки для d={4}, φ={0, π/4, π/2, 3π/4} (всего 5 * 4 признака)
+  - *long* - GLCM признаки для d={1, 4, 8}, φ={0, π/4, π/2, 3π/4} (всего 5 * 3 * 4 признака)
+- **ALL**. Полный вектор признаков {STAT,HIST,GLCM} 
 
 **Все признаки извлекались без учета фоновых пикселей**
 
@@ -54,41 +58,111 @@
 помимо глобальных признаков, будут рассматриваться и локальные признаки.  
 - **global** - признаки, извлеченные неким оператором над всем изображением сразу. 
 - **local** - признаки, извлеченные под маской инструмента размером 17х17 пикселей.  
-Алгоритм извлечения локальных призаков: 
+    Алгоритм извлечения локальных призаков:
 <p align="center">
   <img src="reports/readme_design/algorithm_for_extract_local_feach.png" alt="Локальные признаки здорового листа" height="300"/>
 </p>
-
 Визуализация локальных признаков: 
 <p align="center">
   <img src="reports/readme_design/local_feach_healthy.png" alt="Локальные признаки здорового листа" height="250"/>
   <img src="reports/readme_design/local_feach_disease.png" alt="Локальные признаки больного листа" height="250"/>
 </p>
 
-## Классификаторы и механизм их обучения
+## Классификаторы
 Сравнивались возможности следующих классификаторов:  
-**1. LDF**  Линейный дискриминант Фишера  
-**2. DT**   Дерево решений  
-**3. RF**   Случайный лес  
-**4. SVM**  Мультиклассовый метод опорных векторов  
-**5. KNN**  К-ближайших соседей  
-**6. SLP**  Одноуровневый персептрон  
-**7. PDT**  Предложен новый алгоритм Priority Decision Tree (PDT) для детекции заболевания, работающий только на основе вида распределения тренировочной выборки. Алгоритм работы PDT: <p align="center"> <img src="reports/readme_design/PDT.png" alt="Алгоритм PDT" height="160"/> <img src="reports/readme_design/PDT_example.png" alt="Пример работы PDT на STAT признаках" height="160"/> </p> Для классификации разработан мультиклассовый алгоритм PDT, который для каждого класса бинарно (по алгоритму выше) определяет вероятность принадлежности этому классу, и в конце выбирает класс с макимальной вероятностью. 
+**1. LDF**   Линейный дискриминант Фишера  
+**2. DT**    Дерево решений  
+**3. RF**    Случайный лес  
+**4. SVM**    Мультиклассовый метод опорных векторов  
+**5. KNN**    К-ближайших соседей  
+**6. SLP**    Одноуровневый персептрон  
+**7. MDT**    Предложен новый алгоритм My Decision Tree для детекции заболевания, работающий только на основе вида распределения тренировочной выборки. Алгоритм работы MDT: <p align="center"> <img src="reports/readme_design/PDT.png" alt="Алгоритм MDT" height="160"/> <img src="reports/readme_design/PDT_example.png" alt="Пример работы PDT на STAT признаках" height="160"/> </p> Для классификации разработан мультиклассовый алгоритм MDT, который для каждого класса бинарно (по алгоритму выше) определяет вероятность принадлежности этому классу, и в конце выбирает класс с макимальной вероятностью. 
+
+## Подбор гиперпараметров
+Оценка параметров моделей проводилась с помощью поиска по сетке с применение kfold валидации (k=5). То есть для каждой конкретной модели брались возможные значения
+параметров, и в сетке параметров каждая их комбинация тестировалась k-fold валидацией. В конце выбирался набор параметров, давший наилучший результат при валидации. Валидация
+проводилась на полном векторе глобальных признаков ALL.
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-c3ow">Название метода</th>
+    <th class="tg-c3ow">Параметры для scikit-learn</th>
+    <th class="tg-0lax" rowspan="8"><img src="reports/readme_design/kfold.png" alt="Процесс подбора гиперпараметров" height="550"/></th>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">LDF</td>
+    <td class="tg-c3ow">-</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">MDT</td>
+    <td class="tg-c3ow">alpha=2</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">DT</td>
+    <td class="tg-c3ow">criterion='entropy', max_depth=9</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">KNN</td>
+    <td class="tg-c3ow">n_neighbors=3, metric='euclidean', weights=’distance’</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">RF</td>
+    <td class="tg-c3ow">n_estimators=80, criterion='entropy', max_depth=15</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">SVM</td>
+    <td class="tg-c3ow">C=10, kernel='rbf', gamma='auto'</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">SLP</td>
+    <td class="tg-c3ow">hidden_layer_sizes=50, activation=Relu, <br> loss_function=CrossEntropyLoss, optimizer=Adam, <br> learning_rate=1.e-3, epoch=100, batch_size=100</td>
+  </tr>
+</thead>
+</table>
+
+## Результаты детектирования 
+### RED
+<p align="center">
+  <img src="reports/readme_design/det_r_1.png" alt="Детектирование на глобальных RED признаках"/>
+  <img src="reports/readme_design/det_r_2.png" alt="Детектирование на локальных RED признаках"/>
+</p>
+
+### NDVI
+<p align="center">
+  <img src="reports/readme_design/det_ndvi_1.png" alt="Детектирование на глобальных NDVI признаках"/>
+  <img src="reports/readme_design/det_ndvi_2.png" alt="Детектирование на локальных NDVI признаках"/>
+</p>
 
 
-## Результаты детектирования и классификации
+## Результаты классификации 
+### RED
+<p align="center">
+  <img src="reports/readme_design/clf_r_1.png" alt="Классификация на глобальных RED признаках"/>
+  <img src="reports/readme_design/clf_r_2.png" alt="Классификация на локальных RED признаках"/>
+</p>
+
+### NDVI
+<p align="center">
+  <img src="reports/readme_design/clf_ndvi_1.png" alt="Классификация на глобальных NDVI признаках"/>
+  <img src="reports/readme_design/clf_ndvi_2.png" alt="Классификация на локальных NDVI признаках"/>
+</p>
 
 
 ## Описание модулей
-* model.py - содержит базовые модели: экстрактор функций и полную модель HealthyPlant
-* dataset.py - операции с датасетом  
-* evaluate.py - скрипт для получения метрик от всех классификаторов
-* features.py - извлечение и сохранение признаков  
-* inference.py - скрипт для получения предсказания на конкретном изображении полной модели
-* single_clf_cross_val.py - кросс-валидация на частном примере
-* utils.py - разные функции, используемые в других скриптах
+* Serialize.py содержит скрипт для сериализации ключевой информации об изображениях в json файл, содержащий: полный путь к изображениям и метку класса.
+* Dataset.py содержит операции по доступу к изображениям базы данных.
+* Features.py содержит скрипт для извлечения и сохранения признаков изображений.
+* Crossval.py содержит скрипт для выполнения кросс-валидации и сохранения классификаторов с лучшим набором параметров.
+* Evaluate.py содержит скрипт для тестирования классификаторов.
+* Utils.py включает разные функции используемые в других скриптах
+* Inference.py содержит скрипт для предсказания класса по изображению.
+* Пакет models содержит модули, реализующие следующие классы:
+  * features.py – содержит класс Features для извлечения признаков из изображений.
+  * slp.py – содержит класс SLP, реализующий модель одноуровневого персептрона.
+  * healthyPlant.py – содержит класс HealthyPlant, который реализует сквозной конвейер для классификации болезней растений, от извлечения признаков, до предсказания от классификатора.
+  * pdt.py - содержит класс MDT, реализующий модель собственного приоритетного дерева решений
 
-## Результаты
+## FIX Результаты
 Результаты подробно описаны в [отчете за 2й семестр](materials/reports/report_2_sem.pdf 'отчет'). Реалицация в вектке master.   
 Удаление лишних признаков см в [отчете за 3й семестр](materials/reports/report_3_sem.pdf 'отчет'). Реалицация в вектке pca.  
   
@@ -99,21 +173,11 @@
 1. [Scikit-image. Greycomatrix]
 1. [Scikit-image. Greycoprops]
 1. [Plant Village Dataset]
-1. [RGB+NIR Extraction From A Single RAW Image]
 1. [Measuring Vegetation (NDVI & EVI)]
 1. [PCA in detail]
 1. [PCA understandingly]
 
-## Планы на будущее
-1. Попробовать эквализировать изображения. Посмотреть как изменится кач-во. 
-1. Добавить синий и/или зеленый канал в рассмотрение
-1. Возможно квантовать на больше е число уровней
-1. В отчете : cравнить изображения фич (18 стр 3 сем) с оставленными в конце GLCM фичами. Какой визуальный вклад?
-1. Архитектура признаков. Использовать не все корреляции по отдельности а их сумму. 
-1. Что на счет статичтических GlCM признаков
-1. Добавить confusion matrix
-1. Провести анализ отдельно над каждым типом признаков. Построить гистограмммы для статистических признаков. Исследовать оптимальное число уровней квантования для hist и stat.
-1. Возможно оставить лишь одну задачу - классификации, когда переходим к локальным признакам. А в момент определения лучшего классификатора, уменьшать размерность пространства признаков только относительно него.
+## FIX Добавить comb + confus mtx ++ PCA + корреляционный анализ 
 
 [GLCM]: https://prism.ucalgary.ca/bitstream/handle/1880/51900/texture%20tutorial%20v%203_0%20180206.pdf?sequence=11&isAllowed=y
 [GLCM Texture: A Tutorial]: https://prism.ucalgary.ca/bitstream/handle/1880/51900/texture%20tutorial%20v%203_0%20180206.pdf?sequence=11&isAllowed=y
